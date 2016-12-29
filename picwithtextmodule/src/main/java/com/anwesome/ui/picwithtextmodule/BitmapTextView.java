@@ -55,10 +55,11 @@ public class BitmapTextView extends View {
         if(bitmap!=null && text!=null && !bitmap.isRecycled()) {
             messageBodies = new ArrayList<>();
             float scaleX = (canvas.getWidth()*1.0f)/bitmap.getWidth(),scaleY = (canvas.getHeight()*1.0f)/bitmap.getHeight();
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,canvas.getWidth(),canvas.getHeight(),true);
             canvas.save();
             canvas.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-            canvas.scale(scaleX,scaleY);
-            canvas.drawBitmap(bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight() / 2, paint);
+            //canvas.scale(scaleX,scaleY);
+            canvas.drawBitmap(scaledBitmap, -canvas.getWidth() / 2, -canvas.getHeight() / 2, paint);
             canvas.restore();
             paint.setTextSize(AppConstants.TEXT_SIZE);
             String tokens[] = text.split(" ");
