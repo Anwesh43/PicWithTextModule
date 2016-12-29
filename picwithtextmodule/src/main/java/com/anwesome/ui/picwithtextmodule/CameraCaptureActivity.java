@@ -1,5 +1,6 @@
 package com.anwesome.ui.picwithtextmodule;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ public class CameraCaptureActivity extends AppCompatActivity {
     private int REQUEST_CODE = 1;
     private int w = 0,h = 0;
     private ImageView resultImage;
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
@@ -50,7 +52,7 @@ public class CameraCaptureActivity extends AppCompatActivity {
                 cameraView.setX(w/2-cameraView.getWidth()/2);
                 cameraView.setY(h/2-cameraView.getHeight()/2);
                 resultImage.setX(w/2-resultImage.getWidth()/2);
-                resultImage.setY(cameraView.getWidth()+h/2-resultImage.getHeight()/2);
+                resultImage.setY(0);
             }
         });
 
@@ -60,10 +62,13 @@ public class CameraCaptureActivity extends AppCompatActivity {
         return R.layout.camera_layout;
     }
     protected void processBitmap(Bitmap bitmap) {
-        resultImage.setImageBitmap(bitmap);
+        if(!bitmap.isRecycled()) {
+            resultImage.setImageBitmap(bitmap);
+
+        }
     }
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if(intent.getExtras()!=null) {
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && intent.getExtras()!=null) {
             Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
             if (bitmap != null) {
                 final Dialog dialog = new Dialog(this);
@@ -76,14 +81,17 @@ public class CameraCaptureActivity extends AppCompatActivity {
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         imageView.setStringText(charSequence.toString());
-                        imageView.postInvalidate();
+                        imageView.invalidate();
                     }
                 });
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        processBitmap(view.getDrawingCache());
-                        dialog.dismiss();
+                        Bitmap newBitmap = imageView.getDrawingCache(true);
+                        if(newBitmap!=null) {
+                            processBitmap(Bitmap.createBitmap(newBitmap,0,0,newBitmap.getWidth(),newBitmap.getHeight()));
+                        }
+                       dialog.dismiss();
                     }
                 });
                 dialog.show();

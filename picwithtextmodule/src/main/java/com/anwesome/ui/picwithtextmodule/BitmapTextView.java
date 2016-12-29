@@ -16,9 +16,14 @@ import java.util.List;
  */
 public class BitmapTextView extends View {
     private List<MessageBody> messageBodies = new ArrayList<>();
+    private Bitmap drawingBitmap;
+    public Bitmap getDrawingBitmap() {
+        return drawingBitmap;
+    }
     private class MessageBody {
         private String text;
         private float x,y;
+
         public MessageBody(String text,float x,float y) {
             this.text = text;
             this.x = x;
@@ -47,7 +52,7 @@ public class BitmapTextView extends View {
         this.bitmap = bitmap;
     }
     public void onDraw(Canvas canvas) {
-        if(bitmap!=null && text!=null) {
+        if(bitmap!=null && text!=null && !bitmap.isRecycled()) {
             messageBodies = new ArrayList<>();
             float scaleX = (canvas.getWidth()*1.0f)/bitmap.getWidth(),scaleY = (canvas.getHeight()*1.0f)/bitmap.getHeight();
             canvas.save();
@@ -84,6 +89,7 @@ public class BitmapTextView extends View {
             for (MessageBody messageBody : messageBodies) {
                 messageBody.draw(canvas, paint);
             }
+            drawingBitmap = getDrawingCache();
         }
 
     }

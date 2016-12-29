@@ -5,5 +5,5 @@ package com.anwesome.ui.picwithtextmodule;
  */
 public class AppConstants {
     public static final float SCALE = 1;
-    public static final int TEXT_SIZE = 60;
+    public static final int TEXT_SIZE = 75;
 }
