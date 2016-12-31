@@ -24,7 +24,8 @@ public class CameraCaptureActivity extends AppCompatActivity {
     private int REQUEST_CODE = 1;
     private int w = 0,h = 0;
     private ImageView resultImage;
-
+    private boolean captured = false;
+    private float bitmapHeight = 0;
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
@@ -49,8 +50,15 @@ public class CameraCaptureActivity extends AppCompatActivity {
             public void onGlobalLayout() {
                 int w = linearLayout.getWidth();
                 int h = linearLayout.getHeight();
-                cameraView.setX(w/2-cameraView.getWidth()/2);
-                cameraView.setY(h/2-cameraView.getHeight()/2);
+
+                if(bitmapHeight == 0) {
+                    cameraView.setY(h / 2 - cameraView.getHeight() / 2);
+                    cameraView.setX(w/2-cameraView.getWidth()/2);
+                }
+                else {
+                    cameraView.setY(bitmapHeight-h/20);
+                    cameraView.setX(w/20);
+                }
                 resultImage.setX(w/2-resultImage.getWidth()/2);
                 resultImage.setY(0);
             }
@@ -64,6 +72,7 @@ public class CameraCaptureActivity extends AppCompatActivity {
     protected void processBitmap(Bitmap bitmap) {
         if(!bitmap.isRecycled()) {
             resultImage.setImageBitmap(bitmap);
+            bitmapHeight = bitmap.getHeight();
 
         }
     }
